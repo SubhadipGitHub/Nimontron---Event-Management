@@ -51,6 +51,7 @@ function showNewEventCodesBanner(meta){
       <div><label>Client code</label><div class="code-chip">${esc(meta.clientAccessCode)}</div></div>
     </div>
     <button class="mini-btn" style="margin-top:12px;" onclick="copyAccessInfo()">Copy all codes</button>
+    <button class="mini-btn gold" style="margin-top:12px;" onclick="emailEventSummary()">📧 Email me these details</button>
     <button class="mini-btn ghost" style="margin-top:12px;" onclick="document.getElementById('newEventBanner').innerHTML=''">Dismiss</button>
   </div>`;
 }
@@ -220,9 +221,16 @@ async function saveAccessCodes(){
   renderShareLinks();
   toast('Access codes updated.', 'ok');
 }
+function buildEventSummaryText(){
+  return `Event: ${state.meta.eventName}\nEvent code: ${state.meta.eventCode}\nOrganizer code: ${state.meta.organizerAccessCode}\nCounter code: ${state.meta.counterAccessCode}\nClient code: ${state.meta.clientAccessCode}\n\nGuest link: ${shareLink('guest')}\nCounter link: ${shareLink('counter')}\nOrganizer link: ${shareLink('organizer')}\nClient link: ${shareLink('client')}`;
+}
 function copyAccessInfo(){
-  const text = `Event: ${state.meta.eventName}\nEvent code: ${state.meta.eventCode}\nOrganizer code: ${state.meta.organizerAccessCode}\nCounter code: ${state.meta.counterAccessCode}\nClient code: ${state.meta.clientAccessCode}\n\nGuest link: ${shareLink('guest')}\nCounter link: ${shareLink('counter')}\nOrganizer link: ${shareLink('organizer')}\nClient link: ${shareLink('client')}`;
-  navigator.clipboard.writeText(text).then(()=>toast('Copied.', 'ok')).catch(()=>toast('Could not copy — copy manually.', 'error'));
+  navigator.clipboard.writeText(buildEventSummaryText()).then(()=>toast('Copied.', 'ok')).catch(()=>toast('Could not copy — copy manually.', 'error'));
+}
+function emailEventSummary(){
+  const subject = `Nimontron — ${state.meta.eventName || 'Event'} access codes & links`;
+  const body = `Saved for your records — keep this somewhere safe.\n\n${buildEventSummaryText()}\n\nEach link only works with its matching code (the guest link doesn't need one).`;
+  window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 async function resetEvent(){
   if(!confirm('This clears the entire guest list and serving history for everyone using this event. Continue?')) return;
