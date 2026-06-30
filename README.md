@@ -28,6 +28,8 @@ A single-file, no-build web app for running the guest-facing and operational sid
 
 ## Deploying
 
+> **This repo is already wired up.** `index.html` points at a live Firebase Realtime Database (project `nimontron-events`) with rules scoped to this app's `nimontron/` path, so it works as-is once published — no setup needed unless you're forking this into your own Firebase project. The steps below are for that fork case.
+
 You need two things: a free Firebase Realtime Database (for cross-device sync), and a static host for the HTML file (GitHub Pages).
 
 ### 1. Create a Firebase Realtime Database
