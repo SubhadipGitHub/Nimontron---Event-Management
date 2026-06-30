@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Counter — Nimontron</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233D0B1F'/%3E%3Cpath d='M16 6 L24 16 L16 26 L8 16 Z' fill='%23C9A227'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-header">
+  <div class="app-header-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">Nimontron</span>
+      <span class="brand-script">নিমন্ত্রণ</span>
+    </a>
+    <div class="header-meta">
+      <h1 class="header-event-name" id="headerEventName">Find your event</h1>
+      <div id="syncStatus" class="sync-banner" style="display:none;"></div>
+      <div class="header-links">
+        <span class="role-badge" id="roleBadge">Counter</span>
+        <span class="tally-chip" id="headerTally">— / — plates served</span>
+      </div>
+      <a class="mini-btn ghost" href="counter.html" style="color:var(--gold-soft); border-color:rgba(201,162,39,0.4);">Switch event</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="eventGate"></div>
+  <div id="roleGate"></div>
+
+  <div id="pageContent" style="display:none;">
+    <div class="panel">
+      <h2>Serve a plate</h2>
+      <p class="hint">Type or scan the guest's code and mark the plate served. Once a guest's allotment is used, the system blocks a second serve unless a manager overrides it.</p>
+      <label for="serveCode">Guest code</label>
+      <div class="code-entry">
+        <input id="serveCode" class="text-input" maxlength="6" placeholder="e.g. K7P2" autocomplete="off" />
+        <button class="btn btn-primary" onclick="markServed()">Mark served</button>
+      </div>
+      <label for="counterNameSelect">Serving station (for the log)</label>
+      <input id="counterNameSelect" class="text-input" placeholder="e.g. Counter 1, Live tandoor" />
+      <div id="counterResult"></div>
+    </div>
+    <div class="panel">
+      <h2>Lost their code? Look up by name</h2>
+      <input id="counterSearch" class="text-input" placeholder="Type a guest's name…" oninput="searchGuestsCounter()" />
+      <div id="counterSearchResults" style="margin-top:8px;"></div>
+    </div>
+    <div class="panel">
+      <h2>Recent activity</h2>
+      <div id="recentActivity"></div>
+    </div>
+  </div>
+
+  <p class="footnote">This page only unlocks with the counter access code — it can't see event settings or edit the guest list.</p>
+</div>
+
+<div id="printArea"></div>
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="app.js"></script>
+<script src="counter.js"></script>
+</body>
+</html>

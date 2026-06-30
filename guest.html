@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RSVP & My Pass — Nimontron</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233D0B1F'/%3E%3Cpath d='M16 6 L24 16 L16 26 L8 16 Z' fill='%23C9A227'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-header">
+  <div class="app-header-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">Nimontron</span>
+      <span class="brand-script">নিমন্ত্রণ</span>
+    </a>
+    <div class="header-meta">
+      <h1 class="header-event-name" id="headerEventName">Find your event</h1>
+      <div id="syncStatus" class="sync-banner" style="display:none;"></div>
+      <a class="mini-btn ghost" href="guest.html" style="color:var(--gold-soft); border-color:rgba(201,162,39,0.4);">Different event?</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="eventGate"></div>
+
+  <div id="pageContent" style="display:none;">
+    <div class="panel">
+      <h2>RSVP &amp; find your pass</h2>
+      <p class="hint">Enter your name to see your invite, RSVP, and get your plate code.</p>
+      <label for="selfName">Your name</label>
+      <input id="selfName" class="text-input" placeholder="Full name" />
+      <label for="selfPhone">Last 4 digits of phone (only if names clash)</label>
+      <input id="selfPhone" class="text-input" maxlength="4" placeholder="Optional" />
+      <button class="btn btn-primary" onclick="guestLookup()">Find me</button>
+      <div id="selfResult"></div>
+    </div>
+  </div>
+
+  <p class="footnote">This page is just for guests — it never asks for an organizer or counter code.<br/>This is a working prototype: WhatsApp "sent" status is recorded when the organizer triggers the send, not confirmed by WhatsApp itself.</p>
+</div>
+
+<div id="printArea"></div>
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="app.js"></script>
+<script src="guest.js"></script>
+</body>
+</html>

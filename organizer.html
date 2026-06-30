@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Organizer — Nimontron</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233D0B1F'/%3E%3Cpath d='M16 6 L24 16 L16 26 L8 16 Z' fill='%23C9A227'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-header">
+  <div class="app-header-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">Nimontron</span>
+      <span class="brand-script">নিমন্ত্রণ</span>
+    </a>
+    <div class="header-meta">
+      <h1 class="header-event-name" id="headerEventName">Find or start an event</h1>
+      <div id="syncStatus" class="sync-banner" style="display:none;"></div>
+      <div class="header-links">
+        <span class="role-badge" id="roleBadge">Organizer</span>
+        <span class="tally-chip" id="headerTally">— / — plates served</span>
+      </div>
+      <a class="mini-btn ghost" href="organizer.html" style="color:var(--gold-soft); border-color:rgba(201,162,39,0.4);">Switch event</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="eventGate"></div>
+  <div id="roleGate"></div>
+
+  <div id="pageContent" style="display:none;">
+    <div id="newEventBanner"></div>
+
+    <nav class="subnav">
+      <a href="#add-guest">Add guest</a>
+      <a href="#guest-list">Guest list</a>
+      <a href="#settings">Settings</a>
+    </nav>
+
+    <div class="panel" id="add-guest">
+      <h2>Add a guest</h2>
+      <p class="hint">Each guest gets a unique code the moment you save them.</p>
+      <div class="row">
+        <div><label for="gName">Name</label><input id="gName" class="text-input" placeholder="Guest name" /></div>
+        <div><label for="gPhone">Phone (optional)</label><input id="gPhone" class="text-input" placeholder="For self-lookup" /></div>
+      </div>
+      <div class="row">
+        <div><label for="gGroup">Group / table</label><input id="gGroup" class="text-input" placeholder="e.g. Table 5" /></div>
+        <div><label for="gSide">Side</label><select id="gSide"></select></div>
+        <div><label for="gMealType">Meal type</label><select id="gMealType"></select></div>
+        <div><label for="gAllotted">Plates allotted</label><input id="gAllotted" class="text-input" type="number" min="1" value="1" /></div>
+      </div>
+      <button class="btn btn-primary" onclick="addGuest()">Save guest</button>
+      <div id="organizerMsg"></div>
+
+      <div class="settings-box">
+        <h2 style="font-size:1rem;">Add a list in bulk</h2>
+        <p class="hint">One guest per line: <code>name, phone, group, side, meal type, plates allotted</code>. Only the name is required.</p>
+        <textarea id="bulkText" placeholder="Raj Mehta, 9876543210, Table 5, Groom's side, Non-veg, 1
+Anita Mehta,, Table 5, Groom's side, Veg, 1"></textarea>
+        <button class="btn btn-primary" onclick="bulkImport()">Add list</button>
+      </div>
+    </div>
+
+    <div class="panel" id="guest-list">
+      <h2>Guest list</h2>
+      <div class="row" style="align-items:flex-end;">
+        <input id="guestFilter" class="text-input" placeholder="Search by name, group, or code…" oninput="filterGuestList()" />
+        <button class="mini-btn" style="flex:0 0 auto;" onclick="printAllPasses()">Print all passes</button>
+      </div>
+      <div id="guestListBody" style="margin-top:12px;"></div>
+    </div>
+
+    <div class="panel" id="settings">
+      <h2>Event settings</h2>
+      <label for="eventNameInput">Event name</label>
+      <input id="eventNameInput" class="text-input" />
+      <div class="row">
+        <div><label for="brideNameInput">Bride's name</label><input id="brideNameInput" class="text-input" /></div>
+        <div><label for="groomNameInput">Groom's name</label><input id="groomNameInput" class="text-input" /></div>
+      </div>
+      <label for="funFactsInput">Fun facts about the couple (one per line — picked at random per pass)</label>
+      <textarea id="funFactsInput" placeholder="Once tried to propose during a power cut and ended up doing it by phone flashlight."></textarea>
+
+      <div class="settings-box">
+        <h2 style="font-size:1rem;">Food &amp; side options</h2>
+        <p class="hint">One option per line — these fill the dropdowns above.</p>
+        <div class="row">
+          <div><label for="foodOptionsInput">Meal types</label><textarea id="foodOptionsInput" placeholder="Veg
+Non-veg
+Jain"></textarea></div>
+          <div><label for="sideOptionsInput">Sides</label><textarea id="sideOptionsInput" placeholder="Bride's side
+Groom's side
+Common / both"></textarea></div>
+        </div>
+      </div>
+
+      <div class="settings-box">
+        <h2 style="font-size:1rem;">Invite card</h2>
+        <p class="hint">One PNG, GIF, or short MP4 used for every guest's invite. Keep it under ~3.5MB for reliable saving — long videos usually won't fit.</p>
+        <input type="file" id="inviteFileInput" accept="image/png,image/gif,image/jpeg,video/mp4" onchange="handleInviteFileChange(this)" />
+        <div id="invitePreview" style="margin-top:10px;"></div>
+      </div>
+
+      <label for="pinInput">Plate override PIN</label>
+      <input id="pinInput" class="text-input" placeholder="Used to approve an extra plate at the counter" />
+      <button class="btn btn-primary" onclick="saveSettings()">Save settings</button>
+
+      <div class="settings-box">
+        <h2 style="font-size:1rem;">Access codes</h2>
+        <p class="hint">Each role below has its own code and its own page — give people only the one they need.</p>
+        <label for="eventCodeDisplay">Event code (to find this event)</label>
+        <input id="eventCodeDisplay" class="text-input" readonly />
+        <div class="row">
+          <div><label for="organizerCodeInput">Organizer code</label><input id="organizerCodeInput" class="text-input" /></div>
+          <div><label for="counterCodeInput">Counter code</label><input id="counterCodeInput" class="text-input" /></div>
+          <div><label for="clientCodeInput">Client code</label><input id="clientCodeInput" class="text-input" /></div>
+        </div>
+        <button class="btn" onclick="saveAccessCodes()">Save access codes</button>
+        <button class="mini-btn" style="margin-top:8px;" onclick="copyAccessInfo()">Copy all codes</button>
+      </div>
+
+      <div class="settings-box">
+        <h2 style="font-size:1rem;">Share with your team &amp; guests</h2>
+        <p class="hint">Direct links for each role, with this event already filled in. Each link only works with its matching access code.</p>
+        <div id="shareLinks"></div>
+      </div>
+
+      <div class="settings-box">
+        <button class="btn btn-warn" onclick="resetEvent()">Reset all guest &amp; serving data</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="footnote">Data here is shared with everyone using this event's codes — that's what lets counter, client, and guests see the same live numbers.<br/>This is a working prototype: WhatsApp "sent" status is recorded when you trigger the send, not confirmed by WhatsApp itself.</p>
+</div>
+
+<div class="modal-overlay" id="passModalOverlay" onclick="closePassModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closePassModal()" aria-label="Close">✕</button>
+    <div id="modalPassBody"></div>
+  </div>
+</div>
+<div id="printArea"></div>
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="app.js"></script>
+<script src="organizer.js"></script>
+</body>
+</html>
