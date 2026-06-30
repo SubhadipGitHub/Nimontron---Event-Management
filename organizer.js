@@ -231,9 +231,7 @@ async function resetEvent(){
   renderGuestList();
 }
 
-/* ---------- Share links ---------- */
-function pageBaseUrl(){ return location.origin + location.pathname.replace(/[^/]*$/, ''); }
-function shareLink(page){ return pageBaseUrl() + page + '.html?event=' + encodeURIComponent(activeEventId); }
+/* ---------- Share links (pageBaseUrl/shareLink live in app.js, shared with invite text) ---------- */
 let shareLinkRows = [];
 function renderShareLinks(){
   const el = document.getElementById('shareLinks');

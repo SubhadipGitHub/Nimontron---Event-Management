@@ -273,6 +273,10 @@ async function submitRoleCode(){
   showPageContent();
 }
 
+/* ---------- Direct page links (used by organizer share panel + invite text) ---------- */
+function pageBaseUrl(){ return location.origin + location.pathname.replace(/[^/]*$/, ''); }
+function shareLink(page){ return pageBaseUrl() + page + '.html?event=' + encodeURIComponent(activeEventId); }
+
 /* ---------- Shareable pass + invite text (used by guest & organizer pages) ---------- */
 const POSES = [
   { svg:`<svg viewBox="0 0 90 120" width="70" height="95" aria-hidden="true"><circle cx="45" cy="22" r="14" fill="none" stroke="#3D0B1F" stroke-width="4"/><path d="M45 36 L45 75" stroke="#3D0B1F" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M45 45 L70 18" stroke="#3D0B1F" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="73" cy="14" rx="11" ry="4" fill="#C9A227" stroke="#3D0B1F" stroke-width="2"/><path d="M45 45 L24 60" stroke="#3D0B1F" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M45 75 L30 110" stroke="#3D0B1F" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M45 75 L62 108" stroke="#3D0B1F" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="20" cy="40" r="2.5" fill="#9C1F3D"/><circle cx="70" cy="50" r="2" fill="#9C1F3D"/><circle cx="15" cy="70" r="2" fill="#C9A227"/></svg>`, caption:'plate held high like a trophy' },
@@ -321,16 +325,19 @@ function buildInviteText(guest){
   const fact = facts.length ? facts[hashStr(guest.id+'fact') % facts.length] : null;
   const tagline = TAGLINES[hashStr(guest.id+'tag') % TAGLINES.length].replace('{n}', guest.allotted).replace('{s}', guest.allotted>1?'s':'');
   const couple = [state.meta.brideName, state.meta.groomName].filter(Boolean).join(' & ');
+  const guestLink = shareLink('guest');
   let msg = `🎉 ${state.meta.eventName || "You're invited!"} 🎉\n\n`;
   msg += `Hey ${guest.name}! ${couple ? couple+' would love to have you there.' : "We'd love to have you there."}\n\n`;
   if(fact) msg += `🎲 Fun fact about ${couple || 'the couple'}: ${fact}\n\n`;
-  msg += `Your invite code: ${guest.code}\nEvent code: ${state.meta.eventCode}\n\n`;
-  msg += `Reply here to let us know, or open the app and RSVP with your code.\n\n${tagline}`;
+  msg += `Tap to RSVP & see your plate pass:\n${guestLink}\n\n`;
+  msg += `Your invite code: ${guest.code} (event code ${state.meta.eventCode}, in case the link doesn't open)\n\n`;
+  msg += tagline;
   return msg;
 }
 function buildFollowUpText(guest){
   const couple = [state.meta.brideName, state.meta.groomName].filter(Boolean).join(' & ');
-  return `Hi ${guest.name}! 👋 Just checking in about ${state.meta.eventName || (couple ? couple+"'s event" : 'the event')} — would love to know if you can make it. Your code is ${guest.code} (event code ${state.meta.eventCode}). No worries either way, just let us know when you can! 🙏`;
+  const guestLink = shareLink('guest');
+  return `Hi ${guest.name}! 👋 Just checking in about ${state.meta.eventName || (couple ? couple+"'s event" : 'the event')} — would love to know if you can make it. Tap here to RSVP: ${guestLink} (your code: ${guest.code}). No worries either way, just let us know when you can! 🙏`;
 }
 function printPass(id){
   const guest = state.guests.find(g=>g.id===id);
